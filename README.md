@@ -1,2 +1,2 @@
 # rust-helpers
-Tests by this time
+Mostly test repository by this time
