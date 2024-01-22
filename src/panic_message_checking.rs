@@ -20,14 +20,13 @@ impl Drop for GuardReleaser {
     }
 }
 
-
 /// Assert complex message containment in panic arising from closure.
 /// # Summary
 /// Use instead of `#[should_panic(expected="xyz)"]` when willing to avoid
 /// complex string inlined in attribute declaration.
 /// # Caution
 /// Downside of hooking-into-panic approach is that all test run
-/// in test batch must use this `assert` call instead of `#[should_panic]` 
+/// in test batch must use this `assert` call instead of `#[should_panic]`
 /// expectation.
 /// That since panics out of controlled process on parallel thread will
 /// be handled by current custom hook with known results (mem-leak, test-fail).
@@ -69,7 +68,7 @@ pub fn assert<F: FnOnce() -> () + UnwindSafe>(f: F, exp_msg: &str) {
     });
     _ = std::panic::take_hook();
 
-    assert!(res.is_err(), "FnOnce provided did not panicked at all.");
+    assert!(res.is_err(), "FnOnce provided did not panic at all.");
 
     let info = arc_info.deref();
     let atom_flg = &info.1;
@@ -113,7 +112,7 @@ XML decimal entity: &#8211;";
 
     #[test]
     #[should_panic(
-        expected = "MISMATCH ⸺ expected message not contained\r\nMSG: panicked at 'SOMETHING_DIFFERENT'"
+        expected = "MISMATCH ⸺ expected message not contained\r\nMSG: panicked at src/panic_message_checking.rs:118:20:\nSOMETHING_DIFFERENT"
     )]
     fn assert_different_pnc() {
         let f = || panic!("{}", "SOMETHING_DIFFERENT");
@@ -121,7 +120,7 @@ XML decimal entity: &#8211;";
     }
 
     #[test]
-    #[should_panic(expected = "FnOnce provided did not panicked at all.")]
+    #[should_panic(expected = "FnOnce provided did not panic at all.")]
     fn assert_no_pnc() {
         let f = || {};
         assert(f, REALLY_COMPLEX_MULTILINE_STR);
